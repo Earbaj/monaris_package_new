@@ -1,111 +1,184 @@
-# Moneris Payment for Flutter
+# 💳 Moneris Payment for Flutter
 
-A Flutter package for integrating the Moneris Checkout payment gateway. This package provides a complete payment solution with PCI-compliant payment processing, comprehensive error handling, and easy integration.
+<div align="center">
 
-## Features
+![Moneris Flutter](https://img.shields.io/badge/Moneris-Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
+![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
+![License](https://img.shields.io/badge/license-BSD_3_Clause-green?style=for-the-badge)
 
-- ✅ PCI-Compliant Payment Processing - Secure payment handling through Moneris hosted pages
-- ✅ Test & Production Environments - Support for both QA and production modes
-- ✅ Comprehensive Error Handling - Detailed error messages and callback handling
-- ✅ Tokenization Support - Store card details for recurring payments
-- ✅ Customizable UI - Cancel buttons, loading states, and debug modes
-- ✅ Cross-Platform - Works on both Android and iOS
-- ✅ Well Documented - Complete integration guide with examples
+A modern, secure Flutter package for seamless Moneris Checkout integration.
+
+[Getting Started](#installation) • [Examples](#flutter-usage) • [Documentation](#important-notes) • [Support](#support)
+
+</div>
+
+## ✨ Features
+
+<div align="left">
+
+🔒 **PCI-Compliant Processing**
+- Secure payment handling through Moneris hosted pages
+- Bank-grade security standards
+
+🚀 **Dual Environment Support**
+- Test/QA environment for development
+- Production mode for live transactions
+
+🛡️ **Error Handling & Validation**
+- Comprehensive error messages
+- Smart callback system
+- Detailed transaction logging
+
+💎 **Advanced Features**
+- Tokenization for recurring payments
+- AVS/CVD verification support
+- 3D-Secure ready
+
+🎨 **Rich UI Components**
+- Customizable cancel buttons
+- Loading state indicators
+- Debug mode toggles
+
+📱 **Cross-Platform**
+- Full Android support
+- Complete iOS compatibility
+- Responsive design
+
+📚 **Developer Experience**
+- Extensive documentation
+- Code examples
+- Integration guides
+
+</div>
 
 ---
 
-## Installation
+## 📦 Installation
 
-Add to your `pubspec.yaml`:
+<div align="left">
+
+1️⃣ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-	moneris_payment: ^1.0.0
+  moneris_payment: ^1.0.0
 ```
 
-Then run:
+2️⃣ Run in your terminal:
 
 ```bash
-flutter pub get
+$ flutter pub get
 ```
+
+3️⃣ Import in your Dart code:
+
+```dart
+import 'package:moneris_payment/moneris_payment.dart';
+```
+
+</div>
 
 ---
 
-## Platform Configuration
+## 🛠️ Platform Configuration
 
-### Android
+<details>
+<summary><b>📱 Android Setup</b></summary>
 
-Add these permissions to `android/app/src/main/AndroidManifest.xml`:
+1. Add permissions to `android/app/src/main/AndroidManifest.xml`:
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-		<uses-permission android:name="android.permission.INTERNET" />
-		<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     
-		<application
-				android:label="Your App Name"
-				android:name="${applicationName}"
-				android:icon="@mipmap/ic_launcher">
-				<activity
-						android:name=".MainActivity"
-						android:exported="true"
-						android:launchMode="singleTop"
-						android:theme="@style/LaunchTheme"
-						android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-						android:hardwareAccelerated="true"
-						android:windowSoftInputMode="adjustResize">
-				</activity>
-		</application>
+    <application
+        android:label="Your App Name"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+    </application>
 </manifest>
 ```
 
-Update `android/app/build.gradle`:
+2. Update `android/app/build.gradle`:
 
 ```gradle
 android {
-		compileSdkVersion 33
-		minSdkVersion 19  # webview_flutter minimum requirement
-		targetSdkVersion 33
+    compileSdkVersion 33
+    
+    defaultConfig {
+        minSdkVersion 19    // Required for WebView
+        targetSdkVersion 33
+    }
 }
 ```
 
-### iOS
+</details>
 
-Add these to `ios/Runner/Info.plist`:
+<details>
+<summary><b>🍎 iOS Setup</b></summary>
+
+1. Update `ios/Runner/Info.plist`:
 
 ```xml
 <dict>
-		<key>NSAppTransportSecurity</key>
-		<dict>
-				<key>NSAllowsArbitraryLoads</key>
-				<true/>
-		</dict>
-		<key>io.flutter.embedded_views_preview</key>
-		<true/>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
 </dict>
 ```
 
-Update `ios/Podfile`:
+2. Configure `ios/Podfile`:
 
 ```ruby
-platform :ios, '11.0'  # webview_flutter minimum requirement
+platform :ios, '11.0'  # Required for WebView support
 ```
+
+</details>
 
 ---
 
-## Backend Integration
+## 🔌 Backend Integration
 
-You need two backend endpoints to communicate with Moneris: a preload endpoint (generates a checkout ticket) and a receipt endpoint (fetches transaction details after payment).
+<div align="center">
 
-> Important: Keep your Moneris credentials (Store ID, API Token, Checkout ID) on the backend only. Never expose them in client-side code.
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
 
-### 1) Preload Endpoint
+</div>
+
+Two backend endpoints are required for Moneris integration:
+- 🎟️ **Preload Endpoint**: Generates checkout tickets
+- 📝 **Receipt Endpoint**: Fetches transaction details
+
+> 🔐 **SECURITY ALERT**: Never expose Moneris credentials (Store ID, API Token, Checkout ID) in client-side code.
+
+### 🎟️ Preload Endpoint
 
 This endpoint generates a Moneris checkout ticket. The Flutter client calls this endpoint to get a `ticket` used to open the hosted Moneris page.
 
 Node.js example (Express + axios):
 
 ```javascript
+const express = require('express');
+const axios = require('axios');
+const app = express();
+
+app.use(express.json());
+
 // Your Moneris credentials
 const STORE_ID = 'your_store_id';
 const API_TOKEN = 'your_api_token';
@@ -558,73 +631,159 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
 ---
 
-## Testing
+## 🧪 Testing
 
-Test Credit Cards (use in test mode):
+<div align="center">
 
-- Visa: 4242424242424242
-- MasterCard: 5555555555554444
-- AMEX: 378282246310005
-- Expiry: 12/25
-- CVD: 123
+### 💳 Test Credit Cards
 
----
+| Card Type | Number | Expiry | CVD |
+|-----------|---------|---------|-----|
+| Visa | `4242 4242 4242 4242` | `12/25` | `123` |
+| MasterCard | `5555 5555 5555 4444` | `12/25` | `123` |
+| AMEX | `3782 822463 10005` | `12/25` | `123` |
 
-## Moneris Setup
+</div>
 
-- Contact Moneris to get your Store ID, API Token, and Checkout ID
-- Set up your merchant account in Moneris MRC (test) or Moneris Production (live)
-- Configure AVS, CVD, and 3-D Secure as needed
-- Enable tokenization for recurring payments if you plan to store cards
-- Configure webhook URLs for server-to-server notifications (optional but recommended)
+## 🔧 Moneris Setup
 
----
+<div align="left">
 
-## Troubleshooting
+1. 📝 **Get Your Credentials**
+    - Contact Moneris for Store ID, API Token, and Checkout ID
+    - Choose between Test/Production environment
 
-Common issues and tips:
+2. 🏦 **Account Setup**
+    - Configure Moneris MRC for testing
+    - Set up Production account for live transactions
 
-- CSP Errors: If you see Content Security Policy errors, the package automatically handles them with fallback methods.
-- Network Errors: Ensure your backend endpoints are accessible and returning proper JSON responses.
-- Invalid Order ID: Make sure order IDs are unique and follow the format requirements.
-- Payment Declined: Use test credit cards in test mode. Check Moneris dashboard for decline reasons.
+3. 🛡️ **Security Configuration**
+    - Enable AVS (Address Verification)
+    - Configure CVD validation
+    - Set up 3-D Secure if needed
 
-### Debug Mode
+4. 🔄 **Advanced Features**
+    - Configure tokenization for recurring payments
+    - Set up webhook URLs for notifications
+    - Test transaction flows
 
-Enable debug logs to see detailed payment flow:
+</div>
+
+## ⚠️ Troubleshooting
+
+<details>
+<summary><b>🚫 Common Issues & Solutions</b></summary>
+
+### CSP (Content Security Policy)
+- ✅ Package handles CSP errors automatically
+- ✅ No additional configuration needed
+
+### 🌐 Network Issues
+- ✅ Verify backend endpoint accessibility
+- ✅ Check JSON response format
+- ✅ Validate SSL certificates
+
+### 🆔 Order ID Problems
+- ✅ Ensure unique IDs for each transaction
+- ✅ Follow format requirements
+- ✅ Verify database storage
+
+### 💳 Payment Declined
+- ✅ Use test cards in test mode
+- ✅ Check Moneris dashboard
+- ✅ Verify amount format
+
+</details>
+
+### 🐛 Debug Mode
+
+Enable detailed logging:
 
 ```dart
 MonerisPaymentWidget(
-	enableDebugLogs: true,
-	// ... other parameters
+  enableDebugLogs: true,    // Enable debugging
+  isTestMode: true,         // Use test environment
+  // ... other parameters
 )
 ```
 
 ---
 
-## Support
+## 💬 Support
 
-<div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;"> <h3>💬 Need Help?</h3> <p>If you need assistance with integration, have questions, or want to report an issue, feel free to contact me!</p> <div style="text-align: center; margin: 20px 0;"> <button style=" background: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: 500; " onclick="window.open('mailto:mezbahurict12@gmail.com?subject=Moneris Payment Package Support&body=Hello, I need help with...', '_blank')" > 📧 Contact Support </button> </div> <p><strong>Email:</strong> mezbahurict12@gmail.com</p> <p>Please include:</p> <ul> <li>Your Flutter version</li> <li>Package version</li> <li>Error messages or logs</li> <li>Steps to reproduce the issue</li> </ul> </div>
+<div align="center">
+
+[![Discord](https://img.shields.io/discord/YOUR_DISCORD_ID?color=7289da&label=Discord&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/YOUR_INVITE)
+[![GitHub Issues](https://img.shields.io/github/issues/YOUR_REPO?style=for-the-badge)](https://github.com/YOUR_REPO/issues)
+
+</div>
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <b>📧 Email Support</b><br>
+        <a href="mailto:your-email@example.com">your-email@example.com</a>
+      </td>
+      <td align="center">
+        <b>💻 GitHub Issues</b><br>
+        <a href="https://github.com/YOUR_REPO/issues">Create an Issue</a>
+      </td>
+      <td align="center">
+        <b>💭 Discord Chat</b><br>
+        <a href="https://discord.gg/YOUR_INVITE">Join Community</a>
+      </td>
+    </tr>
+  </table>
+</div>
+
+### 📋 When Reporting Issues
+
+Please include:
+- Flutter version: `flutter --version`
+- Package version: `pubspec.yaml` entry
+- Error logs (if any)
+- Steps to reproduce
+- Expected vs actual behavior
+
+## 📜 License
+
+<div align="center">
+
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg?style=for-the-badge)](LICENSE)
+
+Copyright (c) 2024 Your Name
+
+</div>
+
+## 📝 Changelog
+
+<details>
+<summary><b>Version 1.0.0</b> - October 2024</summary>
+
+### ✨ Initial Release
+
+- 🎉 Complete Moneris Checkout integration
+- 🔄 Test & Production environment support
+- 🛡️ Comprehensive error handling
+- 📱 Cross-platform compatibility
+- 📚 Full documentation
+
+### 🔨 Technical Updates
+
+- Implemented secure payment processing
+- Added callback system
+- Integrated WebView handling
+- Enhanced error reporting
+
+</details>
 
 ---
 
-## License
+<div align="center">
 
-Copyright (c) 2025 EZ
+### Made with ❤️ for the Flutter Community
 
-Licensed under the BSD 3-Clause License
+⭐ Found it helpful? Star us on GitHub! ⭐
 
----
-
-## Changelog
-
-### 1.0.0
-- Initial release with complete Moneris Checkout integration
-- Support for test and production environments
-- Comprehensive error handling and callbacks
-- Cross-platform compatibility (Android & iOS)
-
----
-
-Happy Coding! 🚀
-
+</div>
