@@ -604,7 +604,7 @@ MonerisPaymentWidget(
 
 ## Support
 
-<div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;"> <h3>💬 Need Help?</h3> <p>If you need assistance with integration, have questions, or want to report an issue, feel free to contact me!</p> <div style="text-align: center; margin: 20px 0;"> <button style=" background: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: 500; " onclick="window.open('mailto:earbajsaria3@gmail.com?subject=Moneris Payment Package Support&body=Hello, I need help with...', '_blank')" > 📧 Contact Support </button> </div> <p><strong>Email:</strong> earbajsaria3@gmail.com</p> <p>Please include:</p> <ul> <li>Your Flutter version</li> <li>Package version</li> <li>Error messages or logs</li> <li>Steps to reproduce the issue</li> </ul> </div>
+<div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;"> <h3>💬 Need Help?</h3> <p>If you need assistance with integration, have questions, or want to report an issue, feel free to contact me!</p> <div style="text-align: center; margin: 20px 0;"> <button style=" background: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: 500; " onclick="window.open('mailto:mezbahurict12@gmail.com?subject=Moneris Payment Package Support&body=Hello, I need help with...', '_blank')" > 📧 Contact Support </button> </div> <p><strong>Email:</strong> mezbahurict12@gmail.com</p> <p>Please include:</p> <ul> <li>Your Flutter version</li> <li>Package version</li> <li>Error messages or logs</li> <li>Steps to reproduce the issue</li> </ul> </div>
 
 ---
 
