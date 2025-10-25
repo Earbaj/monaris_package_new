@@ -522,20 +522,95 @@ class MonerisPaymentWidgetState extends State<MonerisPaymentWidget> {
   }
 
   /// Builds transaction result
+  // Map<String, dynamic> _buildTransactionResult(Map<String, dynamic> transactionDetails) {
+  //   return {
+  //     'ticket': _checkoutTicket,
+  //     'transaction_no': transactionDetails['transaction_no']?.toString() ?? 'N/A',
+  //     'card_type': transactionDetails['card_type']?.toString() ?? 'N/A',
+  //     'first6last4': transactionDetails['first6last4']?.toString() ?? 'N/A',
+  //     'expiry_date': transactionDetails['expiry_date']?.toString() ?? 'N/A',
+  //     'amount': transactionDetails['amount']?.toString() ?? 'N/A',
+  //     'response_code': transactionDetails['response_code']?.toString() ?? 'N/A',
+  //     'result': transactionDetails['result']?.toString() ?? 'N/A',
+  //     'data_key': transactionDetails['tokenize']?['data_key']?.toString(),
+  //     'timestamp': DateTime.now().toIso8601String(),
+  //     'environment': widget.isTestMode ? 'test' : 'production',
+  //   };
+  // }
+
+  /// Returns structured data but keeps raw data available
   Map<String, dynamic> _buildTransactionResult(Map<String, dynamic> transactionDetails) {
     return {
+      // Raw data for advanced users
+      'raw_data': transactionDetails,
+
+      // Common fields for convenience (nullable)
+      'transaction_id': transactionDetails['transaction_no']?.toString(),
+      'transaction_no': transactionDetails['transaction_no']?.toString(),
+      'reference_no': transactionDetails['reference_no']?.toString(),
+      'authorization_code': transactionDetails['auth_code']?.toString(),
+
+      // Payment method info
+      'card_type': transactionDetails['card_type']?.toString(),
+      'card_brand': _parseCardBrand(transactionDetails['card_type']?.toString()),
+      'masked_card_number': transactionDetails['first6last4']?.toString(),
+      'expiry_date': transactionDetails['expiry_date']?.toString(),
+
+      // Amount and currency
+      'amount': transactionDetails['amount']?.toString(),
+      'currency': 'CAD', // Moneris typically uses CAD
+
+      // Response codes
+      'response_code': transactionDetails['response_code']?.toString(),
+      'iso_code': transactionDetails['iso_code']?.toString(),
+      'result_code': transactionDetails['result']?.toString(),
+      'result_message': _parseResultMessage(transactionDetails['result']?.toString()),
+
+      // Tokenization
+      'token': transactionDetails['tokenize']?['data_key']?.toString(),
+      'is_tokenized': transactionDetails['tokenize']?['data_key'] != null,
+
+      // Metadata
       'ticket': _checkoutTicket,
-      'transaction_no': transactionDetails['transaction_no']?.toString() ?? 'N/A',
-      'card_type': transactionDetails['card_type']?.toString() ?? 'N/A',
-      'first6last4': transactionDetails['first6last4']?.toString() ?? 'N/A',
-      'expiry_date': transactionDetails['expiry_date']?.toString() ?? 'N/A',
-      'amount': transactionDetails['amount']?.toString() ?? 'N/A',
-      'response_code': transactionDetails['response_code']?.toString() ?? 'N/A',
-      'result': transactionDetails['result']?.toString() ?? 'N/A',
-      'data_key': transactionDetails['tokenize']?['data_key']?.toString(),
       'timestamp': DateTime.now().toIso8601String(),
       'environment': widget.isTestMode ? 'test' : 'production',
+      'success': _isTransactionSuccessful(transactionDetails),
     };
+  }
+
+  /// Helper method to parse card brand
+  String? _parseCardBrand(String? cardType) {
+    if (cardType == null) return null;
+    final Map<String, String> cardBrands = {
+      'V': 'Visa',
+      'M': 'MasterCard',
+      'AX': 'American Express',
+      'DI': 'Discover',
+      'NO': 'Novus',
+      'SE': 'SE',
+    };
+    return cardBrands[cardType];
+  }
+
+  /// Helper method to parse result message
+  String _parseResultMessage(String? resultCode) {
+    const Map<String, String> resultMessages = {
+      'a': 'Transaction approved',
+      'd': 'Transaction declined',
+      'r': 'Transaction retry',
+      't': 'Transaction timeout',
+    };
+    return resultMessages[resultCode?.toLowerCase()] ?? 'Unknown result: $resultCode';
+  }
+
+  /// Helper method to determine if transaction was successful
+  bool _isTransactionSuccessful(Map<String, dynamic> transactionDetails) {
+    final result = transactionDetails['result']?.toString().toLowerCase();
+    final responseCode = transactionDetails['response_code']?.toString();
+
+    // Transaction is successful if result is 'a' (approved)
+    // and response code is '001' (approved) or similar
+    return result == 'a' && (responseCode == '001' || responseCode == '027');
   }
 
   /// Handles payment cancellation

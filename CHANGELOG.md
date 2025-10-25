@@ -1,3 +1,9 @@
-## 0.0.1
+## 1.0.0
 
-* TODO: Describe initial release.
+- Initial release
+- Complete Moneris Checkout integration
+- Support for test and production environments
+- Comprehensive error handling
+- Cross-platform compatibility (Android & iOS)
+- Tokenization support for recurring payments
+- Customizable UI with cancel buttons
