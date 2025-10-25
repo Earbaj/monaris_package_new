@@ -5,7 +5,7 @@ void main() {
   group('MonerisPaymentWidget', () {
     testWidgets('creates successfully with required parameters', (WidgetTester tester) async {
       // This test just ensures the widget can be instantiated
-      final widget = MonerisPaymentWidget(
+      const widget = MonerisPaymentWidget(
         preloadUrl: 'http://192.168.0.101:3000/preload',
         receiptUrl: 'http://192.168.0.101:3000/receipt',
         txnTotal: 1250.50,
@@ -21,7 +21,7 @@ void main() {
 
     testWidgets('validates required parameters are provided', (WidgetTester tester) async {
       expect(
-            () => MonerisPaymentWidget(
+            () => const MonerisPaymentWidget(
           preloadUrl: 'http://192.168.0.101:3000/preload',
           receiptUrl: 'http://192.168.0.101:3000/receipt',
           txnTotal: 1250.50,
@@ -34,7 +34,7 @@ void main() {
     });
 
     testWidgets('has correct default values', (WidgetTester tester) async {
-      final widget = MonerisPaymentWidget(
+      const widget = MonerisPaymentWidget(
         preloadUrl: 'http://192.168.0.101:3000/preload',
         receiptUrl: 'http://192.168.0.101:3000/receipt',
         txnTotal: 1250.50,

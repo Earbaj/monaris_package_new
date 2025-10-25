@@ -669,7 +669,7 @@ class MonerisPaymentWidgetState extends State<MonerisPaymentWidget> {
       width: double.infinity,
       decoration: BoxDecoration(
         border: widget.enableDebugLogs
-            ? Border.all(color: Colors.blue.withOpacity(0.3), width: 1)
+            ? Border.all(color: Colors.blue.withValues(alpha: 0.3), width: 1)
             : null,
       ),
       child: _isLoading
@@ -712,7 +712,7 @@ class MonerisPaymentWidgetState extends State<MonerisPaymentWidget> {
         child: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.7),
+            color: Colors.black.withValues(alpha: 0.7),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
