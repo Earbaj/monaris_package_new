@@ -723,7 +723,7 @@ MonerisPaymentWidget(
     <tr>
       <td align="center">
         <b>📧 Email Support</b><br>
-        <a href="mailto:your-email@example.com">your-email@example.com</a>
+        <a href="mailto:Earbaj">earbajsaria3@gmail.com</a>
       </td>
       <td align="center">
         <b>💻 GitHub Issues</b><br>
