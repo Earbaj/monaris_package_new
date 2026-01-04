@@ -752,7 +752,7 @@ Please include:
 
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg?style=for-the-badge)](LICENSE)
 
-Copyright (c) 2024 Your Name
+Copyright (c) 2026 Earbaj Md Saria
 
 </div>
 
