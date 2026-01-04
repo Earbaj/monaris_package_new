@@ -61,7 +61,7 @@ A modern, secure Flutter package for seamless Moneris Checkout integration.
 
 ```yaml
 dependencies:
-  moneris_payment: ^1.0.0
+  moneris_payment: ^1.0.2
 ```
 
 2️⃣ Run in your terminal:
@@ -160,7 +160,7 @@ platform :ios, '11.0'  # Required for WebView support
 
 </div>
 
-Two backend endpoints are required for Moneris integration:
+# Two backend endpoints are required for Moneris integration:
 - 🎟️ **Preload Endpoint**: Generates checkout tickets
 - 📝 **Receipt Endpoint**: Fetches transaction details
 
@@ -170,7 +170,7 @@ Two backend endpoints are required for Moneris integration:
 
 This endpoint generates a Moneris checkout ticket. The Flutter client calls this endpoint to get a `ticket` used to open the hosted Moneris page.
 
-Node.js example (Express + axios):
+### Node.js example (Express + axios):
 
 ```javascript
 const express = require('express');
@@ -224,7 +224,7 @@ app.post('/preload', async (req, res) => {
 });
 ```
 
-PHP example:
+### PHP example:
 
 ```php
 <?php
@@ -760,7 +760,6 @@ Copyright (c) 2025 Earbaj Md Saria
 
 <details>
 <summary><b>Version 1.0.0</b> - October 2025</summary>
-<summary><b>Version 1.0.1</b> - January 2026</summary>
 
 ### ✨ Initial Release
 
@@ -781,6 +780,14 @@ Copyright (c) 2025 Earbaj Md Saria
 
 ---
 
+<details>
+<summary><b>Version 1.0.1</b> - January 2026</summary>
+
+### 🔨 Technical Updates
+- Update readme
+- and fix some known issue
+
+</details>
 <div align="center">
 
 ### Made with ❤️ for the Flutter Community
