@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
-import 'dart:developer' as developer;
 
 // Import the separated files
 import 'moneris_payment_status.dart';
@@ -233,63 +232,6 @@ class MonerisPaymentWidgetState extends State<MonerisPaymentWidget> {
       _handlePaymentError(errorMsg);
     }
   }
-
-  // /// Loads Moneris checkout interface in WebView
-  // Future<void> _loadMonerisCheckoutInWebView() async {
-  //   if (_checkoutTicket == null) {
-  //     _logError('Cannot load checkout - ticket is null');
-  //     _handlePaymentError('Payment initialization failed');
-  //     return;
-  //   }
-  //
-  //   try {
-  //     _log('Loading Moneris checkout interface...');
-  //     final htmlContent = MonerisHtmlTemplates.buildCheckoutPage(
-  //       isTestMode: widget.isTestMode,
-  //       ticket: _checkoutTicket!,
-  //     );
-  //     await _webViewController.loadHtmlString(htmlContent);
-  //     _log('Moneris checkout interface loaded successfully');
-  //   } catch (e, stackTrace) {
-  //     final errorMsg = MonerisErrorHandler.handleError(e, stackTrace);
-  //     _logError('$errorMsg\nStack trace: $stackTrace');
-  //
-  //     // Load error page as fallback
-  //     final errorHtml = MonerisHtmlTemplates.buildErrorPage(errorMsg);
-  //     await _webViewController.loadHtmlString(errorHtml);
-  //     _handlePaymentError(errorMsg);
-  //   }
-  // }
-  //
-  // /// Handles callbacks from Moneris JavaScript
-  // Future<void> _handleMonerisCallback(String message) async {
-  //   _log('Received callback from Moneris: $message');
-  //
-  //   try {
-  //     final callbackData = _parseCallbackData(message);
-  //     if (callbackData == null) return;
-  //
-  //     final handler = callbackData['handler'] as String?;
-  //     final ticket = callbackData['ticket'] as String?;
-  //     final responseCode = _safeGetResponseCode(callbackData['response_code']);
-  //
-  //     _log('Processing callback - Handler: $handler, Response Code: $responseCode');
-  //
-  //     if (handler == null || ticket == null) {
-  //       _logError('Invalid callback data - missing handler or ticket');
-  //       return;
-  //     }
-  //
-  //     await _routeCallbackHandler(handler, ticket, responseCode, callbackData);
-  //
-  //   } catch (e, stackTrace) {
-  //     final errorMsg = MonerisErrorHandler.handleError(e, stackTrace);
-  //     _logError('$errorMsg\nStack trace: $stackTrace');
-  //     _handlePaymentError(errorMsg);
-  //   }
-  // }
-
-  // Add this method to the MonerisPaymentWidgetState class
 
   /// Loads Moneris checkout interface in WebView with fallback options
   Future<void> _loadMonerisCheckoutInWebView() async {
