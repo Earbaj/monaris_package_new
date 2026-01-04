@@ -1,5 +1,8 @@
-## 1.0.0
+## 1.0.1
+- Update Readme file
+- Fix Issue
 
+## 1.0.0
 - Initial release
 - Complete Moneris Checkout integration
 - Support for test and production environments

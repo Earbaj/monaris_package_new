@@ -752,14 +752,15 @@ Please include:
 
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg?style=for-the-badge)](LICENSE)
 
-Copyright (c) 2026 Earbaj Md Saria
+Copyright (c) 2025 Earbaj Md Saria
 
 </div>
 
 ## 📝 Changelog
 
 <details>
-<summary><b>Version 1.0.0</b> - October 2024</summary>
+<summary><b>Version 1.0.0</b> - October 2025</summary>
+<summary><b>Version 1.0.1</b> - January 2026</summary>
 
 ### ✨ Initial Release
 
