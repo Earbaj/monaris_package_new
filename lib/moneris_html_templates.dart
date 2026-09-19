@@ -287,7 +287,7 @@ class MonerisHtmlTemplates {
          * Logs events for debugging
          */
         function logEvent(eventName, data) {
-            console.log(\`Moneris Event: \${eventName}\`, data);
+            console.log(`Moneris Event: \${eventName}`, data);
         }
 
         // Initialize checkout when Moneris script is loaded

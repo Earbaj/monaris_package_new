@@ -1,6 +1,16 @@
 name: moneris_payment
 description: A Flutter package for integrating Moneris Checkout payment gateway. Supports PCI-compliant payments, tokenization, and comprehensive error handling.
-version: 1.0.2
+version: 1.0.3
+homepage: https://github.com/Earbaj/monaris_package_new
+repository: https://github.com/Earbaj/monaris_package_new
+issue_tracker: https://github.com/Earbaj/monaris_package_new/issues
+
+topics:
+  - payment
+  - moneris
+  - checkout
+  - payment-gateway
+  - pci-compliance
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -15,7 +25,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

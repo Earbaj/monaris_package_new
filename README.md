@@ -2,13 +2,13 @@
 
 <div align="center">
 
-![Moneris Flutter](https://img.shields.io/badge/Moneris-Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
-![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
-![License](https://img.shields.io/badge/license-BSD_3_Clause-green?style=for-the-badge)
+[![pub package](https://img.shields.io/pub/v/moneris_payment.svg?style=for-the-badge&logo=dart&logoColor=white)](https://pub.dev/packages/moneris_payment)
+[![GitHub](https://img.shields.io/badge/GitHub-Earbaj%2Fmonaris__package__new-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Earbaj/monaris_package_new)
+[![License](https://img.shields.io/badge/license-BSD_3_Clause-green?style=for-the-badge)](LICENSE)
 
 A modern, secure Flutter package for seamless Moneris Checkout integration.
 
-[Getting Started](#installation) • [Examples](#flutter-usage) • [Documentation](#important-notes) • [Support](#support)
+[Getting Started](#installation) • [Platform Setup](#-platform-configuration) • [Examples](#flutter-usage) • [Backend & Security](#-backend-integration) • [Support](#-support)
 
 </div>
 
@@ -18,14 +18,14 @@ A modern, secure Flutter package for seamless Moneris Checkout integration.
 
 🔒 **PCI-Compliant Processing**
 - Secure payment handling through Moneris hosted pages
-- Bank-grade security standards
+- Bank-grade security standards (TLS 1.2+)
 
 🚀 **Dual Environment Support**
 - Test/QA environment for development
 - Production mode for live transactions
 
 🛡️ **Error Handling & Validation**
-- Comprehensive error messages
+- Comprehensive error messages and status tracking
 - Smart callback system
 - Detailed transaction logging
 
@@ -35,19 +35,19 @@ A modern, secure Flutter package for seamless Moneris Checkout integration.
 - 3D-Secure ready
 
 🎨 **Rich UI Components**
-- Customizable cancel buttons
+- Configurable cancel buttons (on loading & checkout)
 - Loading state indicators
-- Debug mode toggles
+- Debug mode toggles and overlay
 
 📱 **Cross-Platform**
-- Full Android support
-- Complete iOS compatibility
+- Full Android support (Android 5.0+ / API 21+)
+- Complete iOS compatibility (iOS 12.0+)
 - Responsive design
 
 📚 **Developer Experience**
 - Extensive documentation
-- Code examples
-- Integration guides
+- Code examples and runnable example app
+- Integration & server-side verification guides
 
 </div>
 
@@ -61,7 +61,7 @@ A modern, secure Flutter package for seamless Moneris Checkout integration.
 
 ```yaml
 dependencies:
-  moneris_payment: ^1.0.2
+  moneris_payment: ^1.0.3
 ```
 
 2️⃣ Run in your terminal:
@@ -113,11 +113,11 @@ import 'package:moneris_payment/moneris_payment.dart';
 
 ```gradle
 android {
-    compileSdkVersion 33
+    compileSdkVersion 34    // Android 14+ (or 35)
     
     defaultConfig {
-        minSdkVersion 19    // Required for WebView
-        targetSdkVersion 33
+        minSdkVersion 21    // Required for modern Chromium WebView
+        targetSdkVersion 34 // Meets current Google Play target SDK requirements
     }
 }
 ```
@@ -129,22 +129,35 @@ android {
 
 1. Update `ios/Runner/Info.plist`:
 
+Moneris Checkout operates strictly over secure HTTPS (`https://gatewayt.moneris.com` / `https://gateway.moneris.com`). 
+
+> ⚠️ **SECURITY WARNING**: Do NOT set `NSAllowsArbitraryLoads: true` globally. Disabling App Transport Security allows insecure connections across your entire app and may cause App Store review rejection.
+
+If your backend preload and receipt endpoints are HTTPS (standard for production), **no ATS changes are required**.
+
+If you need to test against a local HTTP development server (e.g. `localhost`), use targeted domain exceptions:
+
 ```xml
 <dict>
+    <!-- App Transport Security (Only needed if using local HTTP backend during testing) -->
     <key>NSAppTransportSecurity</key>
     <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>localhost</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+            </dict>
+        </dict>
     </dict>
-    <key>io.flutter.embedded_views_preview</key>
-    <true/>
 </dict>
 ```
 
 2. Configure `ios/Podfile`:
 
 ```ruby
-platform :ios, '11.0'  # Required for WebView support
+platform :ios, '12.0'  # Flutter minimum supported iOS version
 ```
 
 </details>
@@ -392,6 +405,72 @@ if ($response) {
 
 ---
 
+### 🔒 Server-Side Payment & Webhook Verification (Critical Security)
+
+> [!CAUTION]
+> **NEVER FULFILL ORDERS BASED SOLELY ON CLIENT-SIDE CALLBACKS (`onSuccess`)**  
+> A mobile app runs in an untrusted environment. A malicious user or compromised device could attempt to spoof client callbacks. **Always verify the payment on your secure backend server before fulfilling goods or services.**
+
+#### 🛡️ Backend Verification Checklist
+
+When your server receives the `ticket` at the `/receipt` endpoint (or via Moneris Webhook/Async Notifications), perform the following checks before updating your order database:
+
+```text
+[Flutter Client] --(1. ticket)--> [Your Backend API]
+                                          |
+                                    (2. receipt request with secret API Token)
+                                          v
+                                 [Moneris Gateway]
+                                          |
+                                    (3. raw receipt response)
+                                          v
+[Flutter Client] <--(5. status)-- [Your Backend API] --(4. Validate & Update DB)--> [Order Database]
+```
+
+1. **Verify Response Status**:
+   - `response.data.response.success === 'true'`
+   - `receipt_data.result === 'a'` (Approved. 'd' = Declined, 'r' = Retry, 't' = Timeout)
+   - `receipt_data.response_code === '001'` (Approved transaction)
+2. **Verify Amount Integrity**:
+   - Check that `parseFloat(receipt_data.amount) === order.expected_total`.
+   - Prevents amount-tampering attacks where an attacker alters the client-side total.
+3. **Verify Order Number**:
+   - Ensure `receipt_data.order_no === order.order_id`.
+4. **Idempotency & Replay Protection**:
+   - Store `transaction_no` and `ticket` in your database with unique constraints.
+   - If a request arrives with a ticket or transaction number that has already been processed, reject it.
+
+#### 🔔 Handling Moneris Merchant Resource Center (MRC) Webhooks
+
+If you configure Moneris Asynchronous Notifications / Webhooks in your Moneris MRC account:
+
+```javascript
+// Express.js Webhook Handler
+app.post('/api/moneris-webhook', async (req, res) => {
+  const { response_order_id, response_code, status_code, txn_num } = req.body;
+
+  // 1. Verify that the order exists in your database
+  const order = await db.findOrder(response_order_id);
+  if (!order) {
+    return res.status(404).send('Order not found');
+  }
+
+  // 2. Validate approval status
+  if (response_code === '001' && status_code === '200') {
+    // 3. Mark order as paid idempotently
+    await db.markOrderPaid(response_order_id, {
+      transactionNumber: txn_num,
+      verifiedVia: 'webhook',
+    });
+  }
+
+  // 4. Always respond with HTTP 200 OK to acknowledge receipt
+  res.status(200).send('OK');
+});
+```
+
+---
+
 ## Flutter Usage
 
 Below are basic and advanced usage examples for integrating the `MonerisPaymentWidget` in your Flutter app.
@@ -399,6 +478,7 @@ Below are basic and advanced usage examples for integrating the `MonerisPaymentW
 ### Basic Implementation
 
 ```dart
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:moneris_payment/moneris_payment.dart';
 
@@ -506,6 +586,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
 ### Advanced Implementation with Order Management
 
 ```dart
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:moneris_payment/moneris_payment.dart';
+
 class CheckoutPage extends StatefulWidget {
 	final double totalAmount;
 	final String userEmail;
@@ -713,8 +797,8 @@ MonerisPaymentWidget(
 
 <div align="center">
 
-[![Discord](https://img.shields.io/discord/YOUR_DISCORD_ID?color=7289da&label=Discord&logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/YOUR_INVITE)
-[![GitHub Issues](https://img.shields.io/github/issues/YOUR_REPO?style=for-the-badge)](https://github.com/YOUR_REPO/issues)
+[![GitHub Issues](https://img.shields.io/github/issues/Earbaj/monaris_package_new?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Earbaj/monaris_package_new/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/Earbaj/monaris_package_new?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Earbaj/monaris_package_new)
 
 </div>
 
@@ -723,15 +807,15 @@ MonerisPaymentWidget(
     <tr>
       <td align="center">
         <b>📧 Email Support</b><br>
-        <a href="mailto:Earbaj">earbajsaria3@gmail.com</a>
+        <a href="mailto:earbajsaria3@gmail.com">earbajsaria3@gmail.com</a>
       </td>
       <td align="center">
         <b>💻 GitHub Issues</b><br>
-        <a href="https://github.com/YOUR_REPO/issues">Create an Issue</a>
+        <a href="https://github.com/Earbaj/monaris_package_new/issues">Create an Issue</a>
       </td>
       <td align="center">
-        <b>💭 Discord Chat</b><br>
-        <a href="https://discord.gg/YOUR_INVITE">Join Community</a>
+        <b>⭐ Star Repository</b><br>
+        <a href="https://github.com/Earbaj/monaris_package_new">GitHub Repository</a>
       </td>
     </tr>
   </table>
@@ -759,6 +843,50 @@ Copyright (c) 2025 Earbaj Md Saria
 ## 📝 Changelog
 
 <details>
+<summary><b>Version 1.0.3</b> - September 2026</summary>
+
+### 🛡️ Security & Privacy
+- Removed insecure global `NSAllowsArbitraryLoads: true` in iOS ATS documentation and provided secure domain exception instructions.
+- Removed deprecated `io.flutter.embedded_views_preview`.
+- Added server-side payment and webhook verification best practices guide.
+
+### 🎨 Features & Fixes
+- Added configurable cancel button support (`cancelButtonText`, `showCancelButtonOnLoading`, `showCancelButtonOnPayment`).
+- Fixed broken email `mailto` link and placeholder URLs in documentation.
+- Added missing `import 'dart:math';` in README examples.
+- Updated Android SDK documentation (compileSdk 34, targetSdk 34, minSdk 21).
+- Added comprehensive unit and widget tests.
+- Added complete runnable example application under `example/`.
+
+</details>
+
+---
+
+<details>
+<summary><b>Version 1.0.2</b> - March 2026</summary>
+
+### 🔨 Technical Updates
+- Enhanced transaction details parsing and structured response formatting.
+- Added card brand detection (Visa, MasterCard, Amex, Discover).
+- Improved error handling for double-encoded JSON callback messages.
+- Updated README file and fixed known issues.
+
+</details>
+
+---
+
+<details>
+<summary><b>Version 1.0.1</b> - January 2026</summary>
+
+### 🔨 Technical Updates
+- Updated README with integration tutorials and setup guidelines.
+- Fixed minor WebView navigation handling issues on Android and iOS.
+
+</details>
+
+---
+
+<details>
 <summary><b>Version 1.0.0</b> - October 2025</summary>
 
 ### ✨ Initial Release
@@ -778,20 +906,10 @@ Copyright (c) 2025 Earbaj Md Saria
 
 </details>
 
----
-
-<details>
-<summary><b>Version 1.0.1</b> - January 2026</summary>
-
-### 🔨 Technical Updates
-- Update readme
-- and fix some known issue
-
-</details>
 <div align="center">
 
 ### Made with ❤️ for the Flutter Community
 
-⭐ Found it helpful? Star us on GitHub! ⭐
+⭐ Found it helpful? Star us on [GitHub](https://github.com/Earbaj/monaris_package_new)! ⭐
 
 </div>

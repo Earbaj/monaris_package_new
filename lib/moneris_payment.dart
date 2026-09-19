@@ -5,7 +5,10 @@ import 'package:http/http.dart' as http;
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 
-// Import the separated files
+// Import and export supporting files
+export 'moneris_payment_status.dart';
+export 'moneris_error_handler.dart';
+
 import 'moneris_payment_status.dart';
 import 'moneris_error_handler.dart';
 import 'moneris_html_templates.dart';
@@ -48,6 +51,15 @@ class MonerisPaymentWidget extends StatefulWidget {
   /// Enable debug logging for development and troubleshooting
   final bool enableDebugLogs;
 
+  /// Optional text for the cancel button (defaults to 'Cancel Payment')
+  final String? cancelButtonText;
+
+  /// Whether to display a cancel button during the loading state
+  final bool showCancelButtonOnLoading;
+
+  /// Whether to display a cancel button overlay while the payment page is loaded
+  final bool showCancelButtonOnPayment;
+
   const MonerisPaymentWidget({
     super.key,
     required this.preloadUrl,
@@ -61,6 +73,9 @@ class MonerisPaymentWidget extends StatefulWidget {
     this.onCancel,
     this.isTestMode = true,
     this.enableDebugLogs = false,
+    this.cancelButtonText,
+    this.showCancelButtonOnLoading = false,
+    this.showCancelButtonOnPayment = false,
   });
 
   @override
@@ -253,7 +268,7 @@ class MonerisPaymentWidgetState extends State<MonerisPaymentWidget> {
       await _webViewController.loadHtmlString(htmlContent);
       _log('Moneris checkout interface loaded successfully');
 
-    } catch (e, stackTrace) {
+    } catch (e) {
       _logError('Direct integration failed, trying iframe fallback: $e');
 
       // Fallback to iframe approach
@@ -622,16 +637,33 @@ class MonerisPaymentWidgetState extends State<MonerisPaymentWidget> {
 
   /// Builds loading state
   Widget _buildLoadingState() {
-    return const Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CircularProgressIndicator(),
-        SizedBox(height: 16),
-        Text(
-          'Initializing Secure Payment...',
-          style: TextStyle(fontSize: 16, color: Colors.grey),
-        ),
-      ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(),
+          const SizedBox(height: 16),
+          const Text(
+            'Initializing Secure Payment...',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+          if (widget.showCancelButtonOnLoading && widget.onCancel != null) ...[
+            const SizedBox(height: 24),
+            OutlinedButton.icon(
+              onPressed: _handlePaymentCancellation,
+              icon: const Icon(Icons.close, size: 18),
+              label: Text(widget.cancelButtonText ?? 'Cancel Payment'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.grey.shade700,
+                side: BorderSide(color: Colors.grey.shade400),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 
@@ -640,6 +672,36 @@ class MonerisPaymentWidgetState extends State<MonerisPaymentWidget> {
     return Stack(
       children: [
         WebViewWidget(controller: _webViewController),
+        if (widget.showCancelButtonOnPayment && widget.onCancel != null)
+          Positioned(
+            top: 10,
+            left: 10,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: _handlePaymentCancellation,
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.65),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.close, color: Colors.white, size: 16),
+                      const SizedBox(width: 4),
+                      Text(
+                        widget.cancelButtonText ?? 'Cancel',
+                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         if (widget.enableDebugLogs) ..._buildDebugOverlay(),
       ],
     );
