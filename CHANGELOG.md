@@ -1,4 +1,4 @@
-## 1.0.3
+## 1.0.4
 
 - **Security & Privacy Improvements**:
   - Fixed iOS App Transport Security (ATS) documentation to remove unsafe global `NSAllowsArbitraryLoads: true` and recommend TLS/HTTPS with domain-specific exceptions.
@@ -17,6 +17,10 @@
 - **Dependencies & Metadata**:
   - Upgraded `flutter_lints` to `^5.0.0`.
   - Added `repository`, `homepage`, `issue_tracker`, and `topics` to `pubspec.yaml` for pub.dev points.
+
+## 1.0.3
+
+- Version release with initial updates.
 
 ## 1.0.2
 

@@ -61,7 +61,7 @@ A modern, secure Flutter package for seamless Moneris Checkout integration.
 
 ```yaml
 dependencies:
-  moneris_payment: ^1.0.3
+  moneris_payment: ^1.0.4
 ```
 
 2️⃣ Run in your terminal:
@@ -843,7 +843,7 @@ Copyright (c) 2025 Earbaj Md Saria
 ## 📝 Changelog
 
 <details>
-<summary><b>Version 1.0.3</b> - September 2026</summary>
+<summary><b>Version 1.0.4</b> - September 2026</summary>
 
 ### 🛡️ Security & Privacy
 - Removed insecure global `NSAllowsArbitraryLoads: true` in iOS ATS documentation and provided secure domain exception instructions.
